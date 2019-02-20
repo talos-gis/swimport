@@ -1,0 +1,1 @@
+This file contains the dll addlib.dll, its .h file is also provided (the cpp file is also provided for posterity, it is not needed).
