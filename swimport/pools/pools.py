@@ -7,7 +7,7 @@ from datetime import datetime
 from functools import partial
 
 from swimport.model import FileSource
-import swimport.__data__ as data
+import swimport_data as data
 import swimport.swim as swim_module
 
 

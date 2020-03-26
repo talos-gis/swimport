@@ -1,4 +1,3 @@
-from swimport.__data__ import __version__, __author__
 from swimport.model import \
     TriggerBehaviourSwimRule, FileSource, Trigger, Behaviour,\
     CPPObject, Function, Container, Variable, Enumeration, Typedef
