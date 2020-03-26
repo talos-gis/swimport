@@ -1,4 +1,4 @@
 # Swimport Changelog
-## 3.0.0- Unreleased
+## 3.0.0- 2020/03/26
 ### Added
 * Initial release
