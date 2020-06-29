@@ -222,13 +222,14 @@ class ContainerSwim:
 
     def extend_py_def(self, symbol, params, body, wrapper: str = ...):
         """
-        Extend the container with a python method.
+        Extend the container with a python method. The method is only added after the class is created.
         :param symbol: the name of the function to add/replace
         :param params: the parameters of the function
         :param body: the (python) body of the function
         :param wrapper: if present, will wrap the new function (e.g. "staticmethod", "property").
             Default will copy the type of the previous value, if any.
         """
+
         py_code = ['__temp_store = getattr(' + self.container.name + ',"""' + symbol + '""",None)',
                    f'def __temp_def({params}):']
         py_code.extend(scope_lines(body, '', '', inline=False))
@@ -240,3 +241,10 @@ class ContainerSwim:
         py_code.extend(['__temp_def.prev = __temp_store', self.container.name + '.' + symbol + ' = __temp_def',
                         'del __temp_store, __temp_def'])
         self.post_body.append(Swim.add_python(py_code))
+        self._in_body.append(Swim.add_python(
+            [
+                f"if '''{symbol}''' not in locals():",
+                ("\t@" + wrapper) if wrapper and wrapper is not ... else "",
+                f"\tdef {symbol}({params}): pass"
+            ]
+        ))

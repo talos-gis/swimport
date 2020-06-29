@@ -37,7 +37,7 @@ class VariableBehaviour(Variable.Behaviour):
     behaviour for variable object.
     """
 
-    def __init__(self, immutable=False, const: bool = ..., del_from_module_ns=...):
+    def __init__(self, immutable=False, const: bool = ..., del_from_module_ns=..., inline=False):
         """
         :param immutable: whether to wrap the variable in an %immutable wrap
         :param const: whether to wrap the variable in a %constant directive. default is to check for const keyword in variable type.
@@ -46,6 +46,7 @@ class VariableBehaviour(Variable.Behaviour):
         self.immutable = immutable
         self.const = const
         self.del_from_module_ns = del_from_module_ns
+        self.inline = inline
 
     @object_swimporting
     def wrap(self, rule, obj: Variable, swim):
@@ -71,6 +72,8 @@ class VariableBehaviour(Variable.Behaviour):
         if del_:
             swim(syspools.ns_trap(obj.name))
 
+        if self.inline:
+            swim.add_inline(obj.decleration)
         swim.add_raw(body)
 
 

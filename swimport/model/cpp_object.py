@@ -395,6 +395,16 @@ class Variable(_TypedCPPObject):
         if preamble:
             preamble += ' '
         return preamble + self.type + ' ' + self.name + ';'
+    
+    @property
+    def decleration(self):
+        preamble = []
+        if self.isextern:
+            preamble.append('extern')
+        preamble = ' '.join(preamble)
+        if preamble:
+            preamble += ' '
+        return preamble + self.type + ' ' + self.name + "=" + self._data['defaultValue'] + ';'
 
 
 class Container(_Scope):

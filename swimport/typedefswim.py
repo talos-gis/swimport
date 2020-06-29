@@ -50,8 +50,8 @@ class TypedefAggregate(Iterable[Swimporting], SwimportAggregate):
         while mapping:
             _, td = mapping.popitem()
             stack = [td]
-            while td.object.source_type in mapping:
-                td = mapping.pop(td.object.source_type)
+            while td.object.source_type.strip("* &") in mapping:
+                td = mapping.pop(td.object.source_type.strip("* &"))
                 stack.append(td)
             yield from reversed(stack)
 

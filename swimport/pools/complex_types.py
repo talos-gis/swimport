@@ -1,5 +1,6 @@
 from itertools import chain, product
 import os
+from typing import Dict
 
 from swimport.pools.pools import pools, syspools, IdiomaticPool
 
@@ -22,7 +23,8 @@ def np_char(*, swim):
 
 
 @syspools.add(IdiomaticPool)
-def np_applies(dim, additional=(), const_input=True, ref_out=True, *, swim):
+def np_applies(dim, additional=(), const_input=True, ref_out=True, typedefs = (), *, swim):
+    typedefs = dict(typedefs)
     def dim_params(pref):
         return (pref + ' DIM' + str(i) for i in range(1, dim + 1))
 
@@ -30,14 +32,27 @@ def np_applies(dim, additional=(), const_input=True, ref_out=True, *, swim):
             (u + t for u, t in product(('unsigned ', ''), ('int', 'long', 'long long', 'short',))),
             ('float', 'double', 'signed char', 'unsigned char'),
             additional):
+        alias = None
+        if data_type in typedefs:
+            alias = typedefs[data_type]
         for dim_type in ('int', 'size_t'):
             if const_input:
                 dp = ", ".join(dim_params(dim_type))
+                if alias:
+                    swim.add_raw(
+                        f'%apply ({alias} * IN_ARRAY{dim}, {dp}) '
+                        f'{{ ({data_type} * IN_ARRAY{dim}, {dp}) }};'
+                    )
                 swim.add_raw(
                     f'%apply ({data_type} * IN_ARRAY{dim}, {dp}) '
                     f'{{ ({data_type} const * IN_ARRAY{dim}, {dp}) }};'
                 )
                 if dim == 1:
+                    if alias:
+                        swim.add_raw(
+                            f'%apply ({alias} * INPLACE_ARRAY_FLAT, {dim_type} DIM_FLAT) '
+                            f'{{ ({data_type} * INPLACE_ARRAY_FLAT, {dim_type} DIM_FLAT) }};'
+                        )
                     swim.add_raw(
                         f'%apply ({data_type} * INPLACE_ARRAY_FLAT, {dim_type} DIM_FLAT) '
                         f'{{ ({data_type} const * INPLACE_ARRAY_FLAT, {dim_type} DIM_FLAT) }};'
@@ -57,6 +72,10 @@ def np_applies(dim, additional=(), const_input=True, ref_out=True, *, swim):
                             f'({data_type}** {out_id}, {qdp})',
                         ))
                     applies = ', '.join(applies)
+                    if alias:
+                        swim.add_raw(
+                            f'%apply ({alias}** {out_id}, {main_qdp}) {{({data_type}** {out_id}, {main_qdp})}};'
+                        )
                     swim.add_raw(
                         f'%apply ({data_type}** {out_id}, {main_qdp}) {{'
                         + applies +
@@ -65,28 +84,34 @@ def np_applies(dim, additional=(), const_input=True, ref_out=True, *, swim):
 
 
 @pools.add(IdiomaticPool)
-def numpy_arrays(numpy_dir='', allow_char_arrays=False, const_input=True, ref_out=True, max_dim=1, *, swim):
+def numpy_arrays(numpy_dir='', additionals=(), typedefs = (), allow_char_arrays=False,
+                 const_input=True, ref_out=True, max_dim=1, *,
+                 swim):
     """
     adds the inserts for np arrays to used (if you also use the stdint pool, remember to also use the npstdint pool)
     :param numpy_dir: the search path for the numpy.i file
+    :param additionals: additional dtypes to support.
     :param allow_char_arrays: whether to include typemaps for char arrays.
     :param const_input: whether to allow const pointers  as arrays (for input only)
     :param ref_out: whether to allow ref (&) pointers as arrays (for output only).
     :param max_dim: the maximum number of numpy dimensions to map for.
     """
+    typedefs = dict(typedefs) if typedefs else {}
     if max_dim < 1 or max_dim > 4:
         raise ValueError('maxdim must be between 1 and 4 (inclusive)')
 
     np_main(numpy_dir, swim)
-    additional = []
+    additionals = list(additionals)
     if allow_char_arrays:
         np_char(swim=swim)
-        additional.append('char')
+        additionals.append('char')
+    if typedefs:
+        additionals.extend(typedefs.keys())
 
-    additional = tuple(additional)
+    additionals = tuple(additionals)
 
     for dim in range(1, max_dim + 1):
-        swim(np_applies(dim=dim, const_input=const_input, ref_out=ref_out, additional=additional))
+        swim(np_applies(dim=dim, const_input=const_input, ref_out=ref_out, additional=additionals, typedefs=tuple(typedefs.items())))
 
     from swimport.functionswim import ParameterNameTrigger, ParameterTypeTrigger, ApplyBehaviour, FunctionBehaviour
 

@@ -107,7 +107,7 @@ class FunctionBody(ToPyTypemap, ToCppTypemap, ToCppCheckTypemap, ToCppPostTypema
                                                              'void * volatile userdata'),
                                                             fragments=self.fragments)
         swim.add_raw(f"""
-                    %typemap(out, fragment="{to_py_func}") {swimporting.cpp_name}{{
+                    %typemap(out, fragment="{to_py_func}", optimal="1") {swimporting.cpp_name}{{
                         void * volatile userdata = nullptr;
                         int ok = true;
                         {self.user_data}
