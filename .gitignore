@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+*.pyd
+*.i
+*.lib
+*.obj
+tests/examples/**/example.py
+tests/examples/**/temp
+tests/examples/**/*_wrap.*
