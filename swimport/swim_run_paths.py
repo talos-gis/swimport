@@ -2,14 +2,12 @@ from swimport.swim_run import swimport_paths_tuple
 
 
 def get_path_set(paths_set=0, python_major=3, python_minor=7) -> swimport_paths_tuple:
+    PYTHON_ROOT = os.path.dirname(sys.executable)
+    SWIG_PATH = r'd:\dev\swigwin-3.0.12\swig.exe'
     if not paths_set:
-        SWIG_PATH = r'd:\git\swigwin-3.0.12\swig.exe'
-        PYTHON_ROOT = r'C:\python_envs\x64\{}.{}'.format(python_major, python_minor)
         windows_kit_template = r'C:\Program Files (x86)\Windows Kits\10\{}\10.0.17763.0' + "\\"
         MSVC_dir = r'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023' + "\\"
     else:
-        SWIG_PATH = r'd:\dev\swigwin-3.0.12\swig.exe'
-        PYTHON_ROOT = r'd:\OSGeo4W64-20200613\apps\Python{}{}'.format(python_major, python_minor)
         windows_kit_template = r'C:\Program Files (x86)\Windows Kits\10\{}\10.0.18362.0' + "\\"
         MSVC_dir = r'c:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.26.28801' + "\\"
 

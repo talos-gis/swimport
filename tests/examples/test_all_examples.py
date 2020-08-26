@@ -1,6 +1,7 @@
 from pathlib import Path
 from swimport.swim_run import swim_run_subfolders
 from swimport.swim_run_paths import get_path_set
+from sys import version_info
 
 if __name__ == '__main__':
     # if things are compiling weird, first thing, change this to /Od
@@ -15,7 +16,7 @@ if __name__ == '__main__':
     else:
         from swimport.swim_run import simple_passes_filter as passes_filter
 
-    swimport_paths = get_path_set(paths_set, python_major=3, python_minor=7)
+    swimport_paths = get_path_set(paths_set, python_major=version_info[0], python_minor=version_info[1])
 
     swim_run_subfolders(
         root_dir=tests_dir, optimization=optimization, passes_filter=passes_filter,
