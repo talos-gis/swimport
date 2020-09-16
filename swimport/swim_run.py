@@ -104,6 +104,10 @@ def swim_run(
 
         tmpdir.mkdir(exist_ok=True, parents=True)
         # todo compile with warnings?
+
+        is_64bits = sys.maxsize > 2 ** 32
+        pyd_suffix = f'.cp{sys.version_info[0]}{sys.version_info[1]}-{"win_amd64" if is_64bits else "win32"}.pyd'
+
         proc = subprocess.run([
             swimport_paths.CL_PATH, '/nologo', '/LD', '/EHsc', '/utf-8', optimization,
             '/Tp', str(cxx_path),
@@ -116,7 +120,7 @@ def swim_run(
             '/LIBPATH', swimport_paths.PY_LIB_PATH,
             *it.chain.from_iterable(('/LIBPATH', l) for l in swimport_paths.COMPILE_ADDITIONAL_LIBS),
             '/IMPLIB:' + str(tmpdir / Path(module_name+'.lib')),
-            '/OUT:' + str(dirname / Path('_'+module_name+'.pyd'))
+            '/OUT:' + str(dirname / Path('_'+module_name+pyd_suffix))
         ], stdout=subprocess.PIPE, text=True)
         if proc.returncode != 0:
             print(proc.stdout)
