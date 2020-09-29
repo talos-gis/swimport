@@ -1,11 +1,21 @@
-import setuptools
+from setuptools import setup
 
-import swimport_data
+from swimport_data.__data__ import (
+    __name__,
+    __author__,
+    __author_email__,
+    __license__,
+    __url__,
+    __version__,
+)
 
-setuptools.setup(
-    name=swimport_data.__name__,
-    version=swimport_data.__version__,
-    author=swimport_data.__author__,
+setup(
+    name=__name__,
+    version=__version__,
+    author=__author__,
+    author_email=__author_email__,
+    license=__license__,
+    url=__url__,
     packages=['swimport', 'swimport.model', 'swimport.pools', 'swimport_data', 'swimport.pools.derived_types'],
     install_requires=['CppHeaderParser>=2', ],
     python_requires='>=3.6.0',
