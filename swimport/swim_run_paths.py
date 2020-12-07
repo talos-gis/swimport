@@ -1,3 +1,5 @@
+import os
+import sys
 from swimport.swim_run import swimport_paths_tuple
 
 
