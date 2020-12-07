@@ -1,6 +1,6 @@
 from setuptools import setup
 
-from swimport_data.__data__ import (
+from swimport_data import (
     __name__,
     __author__,
     __author_email__,
