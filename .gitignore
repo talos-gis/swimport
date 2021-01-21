@@ -5,9 +5,9 @@
 *.i
 *.lib
 *.obj
-tests/examples/**/example.py
-tests/examples/**/temp
-tests/examples/**/*_wrap.*
+src/swimport/tests/**/example.py
+src/swimport/tests/**/temp
+src/swimport/tests/**/*_wrap.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
