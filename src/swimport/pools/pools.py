@@ -168,7 +168,7 @@ def disclose(swim):
     add a disclosure the file was generated, including the swimport version and the time
     """
     swim.add_comment_ml(f"""
-                    This file was programmatically generated with {swimport.__name__} v{swimport.__version__}
+                    This file was programmatically generated with {swimport.__pacakge_name__} v{swimport.__version__}
                     on {datetime.now():%Y-%m-%d %H:%M}
                     """)
     swim.add_nl()
