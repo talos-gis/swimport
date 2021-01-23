@@ -12,10 +12,10 @@ strings = All[16:18, 19:21]
 typedefs = All[9:11]
 enums = All[11, 13]
 variables = All[5, 42]
-problematic = All[16, 17, 26, 27, 28, 29, 34, 48]
+problematic = All[16, 17, 26, 27, 28, 29, 34, 48, 49]
 
 # if you only want to run one example, put its number here
-filter_: Union[int, Filter] = All
+filter_: Union[int, Filter, Container] = All - problematic
 
 if isinstance(filter_, Container):
     pass
