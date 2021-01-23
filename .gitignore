@@ -8,6 +8,7 @@
 src/swimport/tests/**/example.py
 src/swimport/tests/**/temp
 src/swimport/tests/**/*_wrap.*
+!src/swimport/tests/resources/*.i
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
